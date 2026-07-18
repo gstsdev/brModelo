@@ -1,1 +1,5 @@
 /dist/
+/build/
+/brModelo.app/
+nbproject/private/
+
