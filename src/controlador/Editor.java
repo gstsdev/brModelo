@@ -1184,6 +1184,10 @@ public class Editor extends BaseControlador implements KeyListener {
         }
     }
 
+    public void abrirArquivo(File arq) {
+        AbrirDiagramaFromFile(arq);
+    }
+
     private void AbrirDiagramaFromFile(File arq) {
         Diagrama res = Diagrama.LoadFromFile(arq, this);
         if (res != null) {

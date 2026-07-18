@@ -34,7 +34,10 @@ SOFTWARE.
 package principal;
 
 import controlador.Diagrama;
+import java.awt.Desktop;
+import java.io.File;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -49,6 +52,9 @@ public class Aplicacao {
     public static final String VERSAO_C = "1";
     public static final String VERSAO_DATA = "Setembro de 2020";
 
+    // Holds a file passed by macOS before the frame is ready (cold-start via double-click).
+    private static File pendingFile;
+
     /**
      * @param args the command line arguments
      */
@@ -56,11 +62,35 @@ public class Aplicacao {
         initLookAndFeel();
         JFrame.setDefaultLookAndFeelDecorated(true);
 
+        // Register before invokeLater so the handler is in place when macOS delivers
+        // the open-file event, which can arrive on a non-EDT thread at any time.
+        if (Desktop.isDesktopSupported()) {
+            Desktop.getDesktop().setOpenFileHandler(e -> {
+                File file = e.getFiles().isEmpty() ? null : e.getFiles().get(0);
+                if (file != null) {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (fmPrincipal != null) {
+                                fmPrincipal.getEditor().abrirArquivo(file);
+                            } else {
+                                pendingFile = file;
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 fmPrincipal = new FramePrincipal();
                 fmPrincipal.setVisible(true);
+                if (pendingFile != null) {
+                    fmPrincipal.getEditor().abrirArquivo(pendingFile);
+                    pendingFile = null;
+                }
             }
         });
     }
