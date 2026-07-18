@@ -51,7 +51,9 @@ for f in Template.brMt Ajuda.brMh; do
     [ ! -f "\$APP_DATA/\$f" ] && cp "\$SCRIPT_DIR/../Java/\$f" "\$APP_DATA/\$f" 2>/dev/null
 done
 
-"$JAVA_BIN" \\
+# exec replaces the shell process with the JVM so macOS routes Apple Events
+# (including the open-file event) directly to Java instead of to bash.
+exec "$JAVA_BIN" \\
     -Xdock:icon="\$SCRIPT_DIR/../Resources/brModelo.icns" \\
     -Xdock:name="brModelo" \\
     -Duser.dir="\$APP_DATA" \\
