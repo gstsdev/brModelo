@@ -4,7 +4,7 @@
  */
 package controlador.editores;
 
-import com.sun.java.swing.plaf.windows.WindowsBorders.DashedBorder;
+import javax.swing.BorderFactory;
 import desenho.formas.Legenda;
 import java.awt.Color;
 import java.awt.Component;
@@ -29,7 +29,7 @@ public class JListItemParaItemLegenda extends JLabel implements ListCellRenderer
     public JListItemParaItemLegenda(boolean ehLinha) {
         setOpaque(true);
         setIconTextGap(6);
-        setBorder(new DashedBorder(Color.gray));
+        setBorder(BorderFactory.createDashedBorder(Color.gray));
         this.ehLina = ehLinha;
     }
 
